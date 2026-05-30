@@ -5,3 +5,7 @@ work/
 *.jou
 *.wlf
 
+# Sigasi 
+.settings/
+.project
+.library_mapping.xml
