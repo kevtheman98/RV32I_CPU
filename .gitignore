@@ -1,0 +1,7 @@
+# build / generated
+bin/
+work/
+*.log
+*.jou
+*.wlf
+
