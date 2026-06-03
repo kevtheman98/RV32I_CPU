@@ -1,139 +1,109 @@
 module reg_file_tb;
-    logic clk, reset, WE3;
-    logic [4:0] A1, A2, A3;
-    logic [31:0] WD3, RD1, RD2;
+    logic [31:0] expected_reg [31:0]; // score board
     int errors;
-    
-
-    reg_file reg_file_inst (
-        .clk(clk),
-        .reset(reset),
-        .WE3(WE3),
-        .A1(A1),
-        .A2(A2),
-        .A3(A3),
-        .WD3(WD3),
-        .RD1(RD1),
-        .RD2(RD2)
-    );
 
     // Generate clock
-    initial clk = 0;
+    logic clk = 0;
     always #5 clk = ~clk;
 
-    logic [31:0] expected_reg [31:0]; // score board
+    //instantiate interface
+    reg_file_if vif (
+        .clk(clk)
+    );
     
-    task automatic randomize_input(ref logic [4:0] A1, A2, A3, ref logic [31:0] WD3, ref logic WE3);
-        A1 = $urandom_range(31,0);
-        A2 = $urandom_range(31,0);
-        A3 = $urandom_range(31,0);
-        WD3 = $urandom;
-        WE3 = $urandom_range(1,0);;
-        
+
+    // uses vif variables and clk
+    reg_file reg_file_inst (
+        .clk(vif.clk),
+        .reset(vif.reset),
+        .WE3(vif.WE3),
+        .A1(vif.A1),
+        .A2(vif.A2),
+        .A3(vif.A3),
+        .WD3(vif.WD3),
+        .RD1(vif.RD1),
+        .RD2(vif.RD2)
+    );
+
+    task automatic apply_reset();
+        vif.cb.reset <= 1;
+        vif.cb.WE3 <= 0;
+        vif.cb.A1 <= 0;
+        vif.cb.A2 <= 0;
+        vif.cb.A3 <= 0;
+        vif.cb.WD3 <= 0;
+        repeat(2) @(vif.cb);
+        vif.cb.reset <= 0;
+        @(vif.cb);
     endtask
 
+    task automatic write_reg(input logic [4:0] reg1, input logic [31:0] data);
+        vif.cb.WE3 <= 1;
+        vif.cb.A3 <= reg1;
+        vif.cb.WD3 <= data;
+        @(vif.cb);
+        vif.cb.WE3 <= 0;
+
+    endtask
+    
+    task automatic read_reg(input logic [4:0] reg1, reg2);
+        vif.cb.A1 <= reg1;
+        vif.cb.A2 <= reg2;
+        @(vif.cb);
+    endtask
 
     initial
         begin
             errors = 0;
-            WD3 = 0;
-            WE3 = 0;
-            A1 = 0;
-            A2 = 0;
-            A3 = 0;
-
+        
             // initialize scoreboard
-            for (int i = 0; i < 32; i++) 
-                    expected_reg[i] = '0;
-            
+            apply_reset();
 
-            // Initial reset
-            reset = 1;
-            @(posedge clk);
-            @(posedge clk);
-
+            // verify reset
             for (int i = 0; i < 32; i++) 
                 begin
-                    A1 = i;
-                    @(posedge clk) // prevents race
-                    if(RD1 !== expected_reg[A1])
-                        begin
-                            $display("FAILED reset test");
-                            errors++;
-                        end
-                
+                    read_reg(i, i);
                 end
             
-            reset = 0;
-            @(posedge clk);
-
-
-            /*  Stress test
+            // Stress test
             for (int i = 0; i < 1000; i++) 
                 begin
-                    randomize_input(A1, A2, A3, WD3, WE3);
-                    @(posedge clk);
-                    #1;
-                
+                    vif.cb.A1 <= $urandom_range(0,31);
+                    vif.cb.A2 <= $urandom_range(0,31);
+                    vif.cb.A3 <= $urandom_range(0,31);
+                    vif.cb.WD3 <= $urandom;
+                    vif.cb.WE3 <= $urandom_range(0,1);
+                    @(vif.cb);
                 end
-            */
             
-            // mid-test reset
-            reset = 1;
-            @(posedge clk);
-            reset = 0;
-            @(posedge clk);
+                
+            // basic read write test to reg 6
+            write_reg(6, 32'h 0000_1234);
+            read_reg(6, 6);
+        
                 
 
-            // basic read write test
-            WE3 = 1;
-            A3 = 6;
-            WD3 = 32'h 0000_1234; // 4460
-            A1 = 6;
-            @(posedge clk);
-                
+            // write multiple times test to reg 2
+            write_reg(2, 32'h 0000_5678);
+            write_reg(2, 32'h 0000_9ABC);
+            write_reg(2, 32'h 0000_DEF0);
+            read_reg(2, 2);
 
-            // write multiple times test
-            WE3 = 1;
-
-            A3 = 2;
-            A1 = 2;
-
-            WD3 = 32'h 0000_1234;
-            @(posedge clk)
-            WD3 = 32'h 0000_5678;
-            @(posedge clk)
-            WD3 = 32'h ABCD_0000;
-            @(posedge clk);
                 
             // x0 register cant be overwritten test
-            A3 = 0;
-            WE3 = 1;
-            WD3 = 32'h 0000_1234;
-            A2 = 0;
-            @(posedge clk)
-            if(RD2 !== 0)
-                begin
-                    $display("FAILED x0 reg lost value");
-                    errors++;
-
-                end
-                
+            write_reg(0, 32'h 0000_1234);
+            write_reg(0, 32'h 0000_5678);
+            read_reg(0, 0);
         
 
-            // Write enable disabled test
-            WE3 = 0;
-            A3 = 10;
-            A1 = 10;
-            WD3 = 32'h 0000_5678; 
-            @(posedge clk);
-
-            @(posedge clk); // actual test/check happens at N+1 posedge clk for every test
-        
-            
+            // Write enable disabled test to reg 10
+            vif.cb.WE3 <= 0;
+            vif.cb.WD3 <= 32'h 0000_5678; 
+            vif.cb.A3 <= 10;
+            read_reg(10, 10);
 
 
-            $display("Test finished with %d", errors);
+            $display("Test finished with %d errors", errors);
             $finish;
             
         end
@@ -142,15 +112,15 @@ module reg_file_tb;
     // Scoreboard(expected_reg)
     always@(posedge clk)
         begin
-            if(reset)
+            if(vif.reset) // not cb because outputs cannot be read only driven so it needs to be raw input
                 begin
                     for (int i = 0; i < 32; i++) 
                         expected_reg[i] <= '0;
                 end
             else
                 begin
-                    if(WE3 && (A3 != 0))
-                        expected_reg[A3] <= WD3;
+                    if(vif.WE3 && (vif.A3 != 0))
+                        expected_reg[vif.A3] <= vif.WD3;
                 end
                 
         end
@@ -158,18 +128,18 @@ module reg_file_tb;
     
 
     // Checker
-    always@(posedge clk)
+    always@(negedge clk) // negedge because checker checks active region but dut and scoreboard are nba scheduled
         begin
-            if(!reset)
+            if(!vif.reset)
                 begin
-                    if(expected_reg[A1] !== RD1) 
+                    if(expected_reg[vif.A1] !== vif.RD1) 
                         begin
-                            $display("Register A1: %d, Expected Result: %d Result: %d", A1, expected_reg[A1], RD1);
+                            $display("[ERROR] Register A1: %d, Expected Result: %d Result: %d Time: %t", vif.A1, expected_reg[vif.A1], vif.cb.RD1, $time);
                             errors++;
                         end
-                    if(expected_reg[A2] !== RD2) 
+                    if(expected_reg[vif.A2] !== vif.RD2) 
                         begin
-                            $display("Register A2: %d, Expected Result: %d Result: %d", A2, expected_reg[A2], RD2);
+                            $display("[ERROR] Register A2: %d, Expected Result: %d Result: %d Time: %t", vif.A2, expected_reg[vif.A2], vif.cb.RD2, $time);
                             errors++;
                         end
                 end
