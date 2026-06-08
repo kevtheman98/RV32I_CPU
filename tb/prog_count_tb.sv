@@ -14,37 +14,52 @@ module prog_count_tb;
         .addout(addout)
     );
 
+
     initial 
         begin
             errors = 0;
+            addin = 0;
 
+
+            // initial reset
+            reset = 1;
+            repeat (2) @(posedge clk);
+            reset = 0;
+            @(posedge clk)
+
+            // stress test
             for (int i = 0; i < 100; i++) 
                 begin
                     addin = $urandom;
-                    // test reset
-                    reset = 1;
-                    // test at negedge, dut samples at posedge
-                    @(posedge clk);
-                    @(negedge clk); 
-                    if(addout !== 0)
-                        begin
-                            $display("Reset for PC failed Time: %t", $time);
-                            errors++;
-                        end
+                    
                     // test assign    
-                    reset = 0;
                     @(posedge clk);
-                    @(negedge clk);
-                    if(addin !== addout)
+                    #1;
+
+                    assert((addin + 4) === addout)
+                    else
                         begin
-                            $display("Assignment for PC failed Time: %t", $time);
+                            $error("Assignment for PC failed Time: %t", $time);
                             errors++;
                         end
                 end
+
+            // test reset
+            reset = 1;
+
+            @(posedge clk);
+            #1;
+
+            assert(addout === 0)
+            else
+                begin
+                    $error("Reset for PC failed Time: %t", $time);
+                    errors++;
+                end
+
+            $display("Test finished with %d errors", errors);
+            $finish;
             
         end
-    
-    
-    
 
 endmodule
