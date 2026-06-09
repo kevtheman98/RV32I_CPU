@@ -8,7 +8,7 @@ module prog_count(
             if(reset)
                 addout <= '0;
             else
-                addout <= addin + 4;
+                addout <= addin;
         end
 
 endmodule

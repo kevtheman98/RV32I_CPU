@@ -36,7 +36,7 @@ module prog_count_tb;
                     @(posedge clk);
                     #1;
 
-                    assert((addin + 4) === addout)
+                    assert(addin === addout)
                     else
                         begin
                             $error("Assignment for PC failed Time: %t", $time);
