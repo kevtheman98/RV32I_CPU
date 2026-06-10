@@ -12,15 +12,20 @@ logic [31:0] instruct_out;
 
 // REGISTER FILE
 logic [31:0] RD1_out;
+logic [31:0] write_data;
+logic reg_write;
 
-// EXTENSION MODULE
+// SIGN EXTENSION 
 logic [31:0] exten_out;
+logic sign_sel;
 
 // ALU 
 logic [31:0] ALU_result;
+logic [2:0] ALU_ctrl;
 
 // Data memory
 logic [31:0] read_data;
+logic mem_write;
 
 prog_count prog_count_instance (
     .clk(clk),
@@ -37,33 +42,36 @@ instr_mem instr_mem_instance (
 reg_file reg_file_instance (
     .clk(clk),
     .reset(reset),
-    .WE3(WE3),
+    .WE3(reg_write),
+    // base reg for I & S type
     .A1(instruct_out [19:15]),
-    .A2(A2),
+    // source reg for sw
+    .A2(instruct_out [24:20]),
+    // dest reg for lw
     .A3(instruct_out [11:7]),
     .WD3(read_data),
     .RD1(RD1_out),
-    .RD2(RD2)
+    .RD2(write_data)
 );
 
 sign_extn sign_extn_instance (
-    // convert 12-bit offset to 32 bit
-    .sign_addin(instruct_out [31:20]),
-    .sign_addout(exten_out)
+    .sign_ex_addin(instruct_out [31:7]),
+    .sign_ex_select(sign_sel),
+    .sign_ex_addout(exten_out)
 );
 
 alu alu_instance (
     .a(RD1_out),
     .b(exten_out),
-    .select(select),
+    .select(ALU_ctrl),
     .result(ALU_result)
 );
 
 data_mem data_mem_instance (
     .clk(clk),
-    .WE(WE),
+    .WE(mem_write),
     .address(ALU_result),
-    .WD(WD),
+    .WD(write_data),
     .RD(read_data)
 );
 
