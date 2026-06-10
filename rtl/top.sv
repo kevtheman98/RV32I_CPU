@@ -11,9 +11,11 @@ logic [31:0] pc_adder_out;
 logic [31:0] instruct_out;
 
 // REGISTER FILE
-logic [31:0] RD1_out;
 logic [31:0] write_data;
 logic reg_write;
+logic [31:0] RD2_out;
+
+assign RD2_out = write_data;
 
 // SIGN EXTENSION 
 logic [31:0] exten_out;
@@ -22,10 +24,15 @@ logic sign_sel;
 // ALU 
 logic [31:0] ALU_result;
 logic [2:0] ALU_ctrl;
+logic [31:0] ALU_srcA;
+logic [31:0] ALU_srcB;
 
 // Data memory
 logic [31:0] read_data;
 logic mem_write;
+logic [31:0] result;
+
+
 
 prog_count prog_count_instance (
     .clk(clk),
@@ -49,9 +56,9 @@ reg_file reg_file_instance (
     .A2(instruct_out [24:20]),
     // dest reg for lw
     .A3(instruct_out [11:7]),
-    .WD3(read_data),
-    .RD1(RD1_out),
-    .RD2(write_data)
+    .WD3(result),
+    .RD1(ALU_srcA),
+    .RD2(RD2_out)
 );
 
 sign_extn sign_extn_instance (
@@ -61,8 +68,8 @@ sign_extn sign_extn_instance (
 );
 
 alu alu_instance (
-    .a(RD1_out),
-    .b(exten_out),
+    .a(ALU_srcA),
+    .b(ALU_srcB),
     .select(ALU_ctrl),
     .result(ALU_result)
 );
@@ -79,5 +86,25 @@ pc_adder pc_adder_instance (
     .current_address(pc_out),
     .next_address(pc_adder_out)
 );
+
+// Muxes & Control Signals
+
+logic ALU_src_sig;
+logic result_src; 
+
+mux ALU_mux (
+    .a(RD2_out),
+    .b(exten_out),
+    .sel(ALU_src_sig),
+    .y(ALU_srcB)
+);
+
+mux result_mux (
+    .a(ALU_result),
+    .b(read_data),
+    .sel(result_src),
+    .y(result)
+);
+
 
 endmodule
