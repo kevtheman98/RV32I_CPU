@@ -2,9 +2,14 @@ module top (
     input clk, reset
 );
 
+// CONSTANTS
+const int PC_increm = 4;
+
 // PC & Adder
-logic [31:0] pc_out;
-logic [31:0] pc_adder_out;
+logic [31:0] PC_out;
+logic [31:0] PC_in;
+logic [31:0] PC_plus4;
+logic [31:0] PC_target;
 
 
 // INSTURCTION MEMORY 
@@ -37,12 +42,12 @@ logic [31:0] result;
 prog_count prog_count_instance (
     .clk(clk),
     .reset(reset),
-    .addin(pc_adder_out),
-    .addout(pc_out)
+    .addin(PC_in),
+    .addout(PC_out)
 );
 
 instr_mem instr_mem_instance (
-    .address(pc_out),
+    .address(PC_out),
     .instruction(instruct_out)
 );
 
@@ -82,20 +87,28 @@ data_mem data_mem_instance (
     .RD(read_data)
 );
 
-pc_adder pc_adder_instance (
-    .current_address(pc_out),
-    .next_address(pc_adder_out)
+adder PC_adder (
+    .current_address(PC_out),
+    .increment_addr(PC_increm),
+    .next_address(PC_plus4)
+);
+
+adder PC_target_adder (
+    .current_address(PC_out),
+    .increment_addr(exten_out),
+    .next_address(PC_target)
 );
 
 // Muxes & Control Signals
 
-logic ALU_src_sig;
+logic ALU_src;
 logic result_src; 
+logic PC_src;
 
 mux ALU_mux (
     .a(RD2_out),
     .b(exten_out),
-    .sel(ALU_src_sig),
+    .sel(ALU_src),
     .y(ALU_srcB)
 );
 
@@ -104,6 +117,13 @@ mux result_mux (
     .b(read_data),
     .sel(result_src),
     .y(result)
+);
+
+mux PC_mux (
+    .a(PC_plus4),
+    .b(PC_target),
+    .sel(PC_src),
+    .y(PC_in)
 );
 
 

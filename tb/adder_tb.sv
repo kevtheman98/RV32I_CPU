@@ -1,10 +1,14 @@
-module pc_adder_tb;
+module adder_tb;
     logic [31:0] current_address;
+    logic [31:0] increment_addr;
     logic [31:0] next_address;
     int errors;
 
-    pc_adder pc_adder_instance (
+
+    // FIX-ME made more modular because multiple adders were needed
+    adder adder_instance (
         .current_address(current_address),
+        .increment_addr(increment_addr),
         .next_address(next_address)
     );
 
