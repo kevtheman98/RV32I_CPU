@@ -1,7 +1,8 @@
 module alu (
     input logic [31:0] a, b,
     input logic [3:0] select,
-    output logic [31:0] result
+    output logic [31:0] result,
+    output logic zeroFlag
 
 );
 
@@ -19,8 +20,12 @@ always_comb
             4'b1000 : result = ($signed(a) < $signed(b)) ? 32'd1 : 32'd0; // slt
             4'b1001 : result = (a < b) ? 32'd1 : 32'd0; // sltu
  
-            default : result = 32'b0;
+            default : result = 32'bx;
         endcase
+
+        if(result === 0)
+            zeroFlag = 1;
+
         
     end
 
