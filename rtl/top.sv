@@ -20,7 +20,7 @@ logic [31:0] write_data;
 logic reg_write;
 logic [31:0] RD2_out;
 
-assign RD2_out = write_data;
+assign write_data = RD2_out;
 
 // SIGN EXTENSION 
 logic [31:0] exten_out;
@@ -131,7 +131,7 @@ mux PC_mux (
 // Control Unit
 
 control_unit control_unit_instance (
-    .control_op(instruct_out[0:6]),
+    .control_op(instruct_out[6:0]),
     .funct3(instruct_out[14:12]),
     .funct7(instruct_out[30]), // only funct7[5]
     .zero(zeroFlag), 
