@@ -24,13 +24,14 @@ assign RD2_out = write_data;
 
 // SIGN EXTENSION 
 logic [31:0] exten_out;
-logic sign_sel;
+logic exten_sel;
 
 // ALU 
 logic [31:0] ALU_result;
 logic [2:0] ALU_ctrl;
 logic [31:0] ALU_srcA;
 logic [31:0] ALU_srcB;
+logic zeroFlag;
 
 // Data memory
 logic [31:0] read_data;
@@ -68,7 +69,7 @@ reg_file reg_file_instance (
 
 sign_extn sign_extn_instance (
     .sign_ex_addin(instruct_out [31:7]),
-    .sign_ex_select(sign_sel),
+    .sign_ex_select(exten_sel),
     .sign_ex_addout(exten_out)
 );
 
@@ -76,7 +77,8 @@ alu alu_instance (
     .a(ALU_srcA),
     .b(ALU_srcB),
     .select(ALU_ctrl),
-    .result(ALU_result)
+    .result(ALU_result),
+    .zeroFlag(zeroFlag)
 );
 
 data_mem data_mem_instance (
@@ -125,6 +127,24 @@ mux PC_mux (
     .sel(PC_src),
     .y(PC_in)
 );
+
+// Control Unit
+
+control_unit control_unit_instance (
+    .control_op(instruct_out[0:6]),
+    .funct3(instruct_out[14:12]),
+    .funct7(instruct_out[30]), // only funct7[5]
+    .zero(zeroFlag), 
+    .PC_sig(PC_src),
+    .result_sig(result_src),
+    .mem_write_sig(mem_write),
+    .ALU_ctrl(ALU_ctrl),
+    .ALU_src_sig(ALU_src),
+    .exten_src_sig(exten_sel),
+    .reg_write_sig(reg_write)
+);
+
+
 
 
 endmodule
