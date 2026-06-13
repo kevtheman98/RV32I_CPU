@@ -6,7 +6,7 @@ module main_decoder(
     output logic mem_write_sig,
     output logic result_sig,
     output logic branch_sig,
-    output logic ALU_op_out
+    output logic [1:0] ALU_op_out
     
 );
 

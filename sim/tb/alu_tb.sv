@@ -2,11 +2,13 @@ module alu_tb;
 
     logic [31:0] a, b, result, yexpected;
     logic [3:0] select;
+    logic zeroFlag;
 
     alu alu_instance (
         .a(a),
         .b(b),
         .select(select),
+        .zeroFlag(zeroFlag), // FIX-ME test zeroflag
         .result(result)
     );
 
@@ -23,7 +25,7 @@ module alu_tb;
             4'b1000 : expected_alu = ($signed(a) < $signed(b)) ? 32'd1 : 32'd0; // slt
             4'b1001 : expected_alu = (a < b) ? 32'd1 : 32'd0; // sltu
  
-            default : expected_alu = 32'b0;
+            default : expected_alu = 32'bx;
         endcase     
     endfunction
     
