@@ -9,3 +9,6 @@ work/
 .settings/
 .project
 .library_mapping.xml
+
+// vivado
+vivado_RISCV/
