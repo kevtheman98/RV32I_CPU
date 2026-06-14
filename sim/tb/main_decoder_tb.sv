@@ -23,14 +23,14 @@ module main_decoder_tb;
 
 
     task automatic check(
-        input logic test_name,
+        input string test_name,
         input logic reg_write_exp,
-        input logic exten_src_exp,
+        input logic [1:0] exten_src_exp,
         input logic ALU_src_exp,
         input logic mem_write_exp,
         input logic result_exp,
         input logic branch_exp,
-        input logic ALU_op_out_exp
+        input logic [1:0] ALU_op_out_exp
     );
         if(
             reg_write_exp === reg_write_sig &&
@@ -58,8 +58,7 @@ module main_decoder_tb;
     initial 
         begin
 
-            
-            main_op_in = 000_0011;
+            main_op_in = 7'b000_0011;
             #1;
             check(
                 "lw",
