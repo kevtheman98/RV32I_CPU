@@ -11,9 +11,9 @@ module reg_file_tb;
     logic clk = 0;
     always #5 clk = ~clk;
 
-    // Clocking prevents many NBA & Active race condtions
+    // prevents race conditions between dut and tb by having set rules for sampling and driving
     clocking cb @(posedge clk);
-        default input #1step output #0; // input 1step before clock, output on nba region
+        default input #1step output #0; // samples 1step before clock, drives inputs after dut evaluation
         input RD1, RD2;
         output reset, WE3, A1, A2, A3, WD3;
     endclocking
