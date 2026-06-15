@@ -1,26 +1,28 @@
 module top (
-    input clk, reset
+    input clk, reset,
+    output [31:0] pc_out, instruct_out, RD1_out, RD2_out 
+
+    
 );
 
 // CONSTANTS
 const int PC_increm = 4;
 
 // PC & Adder
-logic [31:0] PC_out;
-logic [31:0] PC_in;
+logic [31:0] PC_curr;
+logic [31:0] PC_next;
 logic [31:0] PC_plus4;
 logic [31:0] PC_target;
 
 
 // INSTURCTION MEMORY 
-logic [31:0] instruct_out;
+logic [31:0] instruction;
 
 // REGISTER FILE
 logic [31:0] write_data;
 logic reg_write;
-logic [31:0] RD2_out;
-
-assign write_data = RD2_out;
+logic [31:0] RD1;
+logic [31:0] RD2;
 
 // SIGN EXTENSION 
 logic [31:0] exten_out;
@@ -38,18 +40,30 @@ logic [31:0] read_data;
 logic mem_write;
 logic [31:0] result;
 
+// intersystem connections
+assign ALU_srcA = RD1;
+assign write_data = RD2;
+
+// Observation Signals for tb
+assign pc_out = PC_curr;
+assign instruct_out = instruction;
+assign RD1_out = RD1;
+assign RD2_out = RD2;
+
+
+
 
 
 prog_count prog_count_instance (
     .clk(clk),
     .reset(reset),
-    .addin(PC_in),
-    .addout(PC_out)
+    .addin(PC_next),
+    .addout(PC_curr)
 );
 
 instr_mem instr_mem_instance (
-    .address(PC_out),
-    .instruction(instruct_out)
+    .address(PC_curr),
+    .instruction(instruction)
 );
 
 reg_file reg_file_instance (
@@ -57,18 +71,18 @@ reg_file reg_file_instance (
     .reset(reset),
     .WE3(reg_write),
     // base reg for I & S type
-    .A1(instruct_out [19:15]),
+    .A1(instruction [19:15]),
     // source reg for sw
-    .A2(instruct_out [24:20]),
+    .A2(instruction [24:20]),
     // dest reg for lw
-    .A3(instruct_out [11:7]),
+    .A3(instruction [11:7]),
     .WD3(result),
-    .RD1(ALU_srcA),
-    .RD2(RD2_out)
+    .RD1(RD1),
+    .RD2(RD2)
 );
 
 sign_extn sign_extn_instance (
-    .sign_ex_addin(instruct_out [31:7]),
+    .sign_ex_addin(instruction [31:7]),
     .sign_ex_select(exten_sel),
     .sign_ex_addout(exten_out)
 );
@@ -90,13 +104,13 @@ data_mem data_mem_instance (
 );
 
 adder PC_adder (
-    .current_address(PC_out),
+    .current_address(PC_curr),
     .increment_addr(PC_increm),
     .next_address(PC_plus4)
 );
 
 adder PC_target_adder (
-    .current_address(PC_out),
+    .current_address(PC_curr),
     .increment_addr(exten_out),
     .next_address(PC_target)
 );
@@ -108,7 +122,7 @@ logic result_src;
 logic PC_src;
 
 mux ALU_mux (
-    .a(RD2_out),
+    .a(RD2),
     .b(exten_out),
     .sel(ALU_src),
     .y(ALU_srcB)
@@ -125,15 +139,15 @@ mux PC_mux (
     .a(PC_plus4),
     .b(PC_target),
     .sel(PC_src),
-    .y(PC_in)
+    .y(PC_next)
 );
 
 // Control Unit
 
 control_unit control_unit_instance (
-    .control_op(instruct_out[6:0]),
-    .funct3(instruct_out[14:12]),
-    .funct7(instruct_out[30]), // only funct7[5]
+    .control_op(instruction[6:0]),
+    .funct3(instruction[14:12]),
+    .funct7(instruction[30]), // only funct7[5]
     .zero(zeroFlag), 
     .PC_sig(PC_src),
     .result_sig(result_src),
