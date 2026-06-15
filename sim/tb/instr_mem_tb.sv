@@ -1,6 +1,6 @@
 module instr_mem_tb;
-    parameter tb_ROM_0 = 32'h01498933;
-    parameter tb_ROM_1 = 32'h40730283;
+    parameter tb_ROM_0 = 32'h0044A303;
+    parameter tb_ROM_1 = 32'h0064A423;
     
     
     logic [31:0] address;
@@ -21,7 +21,7 @@ module instr_mem_tb;
             #1;
             assert(instruction === tb_ROM_0) 
                 else begin
-                        $error("ROM read failed");
+                        $error("ROM read failed, Value: %h, Expected: %h", instruction, tb_ROM_0);
                         errors++;
                     end
                 
@@ -31,7 +31,7 @@ module instr_mem_tb;
             #1;
             assert(instruction === tb_ROM_1) 
                 else begin
-                        $error("ROM read failed");
+                        $error("ROM read failed, Value: %h, Expected: %h", instruction, tb_ROM_1);
                         errors++;
                     end
 

@@ -8,7 +8,7 @@ module instr_mem(
     
     initial 
         begin
-            $readmemh("testdata/instr_mem.hex", mem);
+            $readmemh("instr_mem.mem", mem);
         end
     
     // assign instruction for current address
