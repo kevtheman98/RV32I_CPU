@@ -53,6 +53,18 @@ always_comb begin
                             branch_sig = 1'b1;
                             ALU_op_out = 2'b01;
                         end
+        // addi
+        7'b001_0011 :   begin
+                            reg_write_sig = 1'b1;
+                            exten_src_sig = 2'b00;
+                            ALU_src_sig = 1'b1;
+                            mem_write_sig = 1'b0;
+                            result_sig = 1'b0;
+                            branch_sig = 1'b0;
+                            ALU_op_out = 2'b10;
+                            
+                        end
+        
 
         default :   begin
                         reg_write_sig = 1'b0;
