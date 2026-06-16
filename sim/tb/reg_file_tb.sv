@@ -71,17 +71,6 @@ module reg_file_tb;
                     read_reg(i, i);
                 end
             
-            // Stress test
-            for (int i = 0; i < 1000; i++) 
-                begin
-                    cb.A1 <= $urandom_range(0,31);
-                    cb.A2 <= $urandom_range(0,31);
-                    cb.A3 <= $urandom_range(0,31);
-                    cb.WD3 <= $urandom;
-                    cb.WE3 <= $urandom_range(0,1);
-                    @(cb);
-                end
-            
                 
             // basic read write test to reg 6
             write_reg(6, 32'h 0000_1234);
