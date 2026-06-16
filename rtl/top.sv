@@ -1,6 +1,16 @@
 module top (
-    input clk, reset,
-    output [31:0] pc_out, instruct_out, RD1_out, RD2_out 
+    input logic clk, reset,
+    output logic [31:0] pc_out, 
+                        instruct_out, 
+                        RD1_out, 
+                        RD2_out, 
+                        WD3_out, 
+                        exten_out, 
+                        A1_out, 
+                        A2_out, 
+                        A3_out,
+                        sign_ex_addin_out
+
 
     
 );
@@ -25,8 +35,8 @@ logic [31:0] RD1;
 logic [31:0] RD2;
 
 // SIGN EXTENSION 
-logic [31:0] exten_out;
-logic exten_sel;
+logic [31:0] exten;
+logic [1:0] exten_sel;
 
 // ALU 
 logic [31:0] ALU_result;
@@ -49,8 +59,12 @@ assign pc_out = PC_curr;
 assign instruct_out = instruction;
 assign RD1_out = RD1;
 assign RD2_out = RD2;
-
-
+assign WD3_out = result;
+assign exten_out = exten;
+assign A1_out = instruction [19:15];
+assign A2_out = instruction [24:20];
+assign A3_out = instruction [11:7];
+assign sign_ex_addin_out = instruction [31:7];
 
 
 
@@ -82,9 +96,9 @@ reg_file reg_file_instance (
 );
 
 sign_extn sign_extn_instance (
-    .sign_ex_addin(instruction [31:7]),
+    .sign_ex_addin(instruction [31:0]),
     .sign_ex_select(exten_sel),
-    .sign_ex_addout(exten_out)
+    .sign_ex_addout(exten)
 );
 
 alu alu_instance (
@@ -111,7 +125,7 @@ adder PC_adder (
 
 adder PC_target_adder (
     .current_address(PC_curr),
-    .increment_addr(exten_out),
+    .increment_addr(exten),
     .next_address(PC_target)
 );
 
@@ -123,7 +137,7 @@ logic PC_src;
 
 mux ALU_mux (
     .a(RD2),
-    .b(exten_out),
+    .b(exten),
     .sel(ALU_src),
     .y(ALU_srcB)
 );
