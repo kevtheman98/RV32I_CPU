@@ -67,13 +67,13 @@ always_comb begin
         
 
         default :   begin
-                        reg_write_sig = 1'b0;
-                        exten_src_sig = 2'b00;
-                        ALU_src_sig = 1'b0;
-                        mem_write_sig = 1'b0;
-                        result_sig = 1'b0;
-                        branch_sig = 1'b0;
-                        ALU_op_out = 2'b00;
+                        reg_write_sig = 1'bx;
+                        exten_src_sig = 2'bxx;
+                        ALU_src_sig = 1'bx;
+                        mem_write_sig = 1'bx;
+                        result_sig = 1'bx;
+                        branch_sig = 1'bx;
+                        ALU_op_out = 2'bxx;
 
 
                     end
