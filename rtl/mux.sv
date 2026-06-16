@@ -10,7 +10,7 @@ always_comb
             1'b0 : y = a;
             1'b1 : y = b;
             
-            default : y = '0;
+            default : y = 'x;
         endcase
     end
 endmodule
