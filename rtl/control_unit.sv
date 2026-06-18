@@ -8,13 +8,13 @@ module control_unit (
     output logic PC_sig,
     output logic result_sig,
     output logic mem_write_sig,
-    output logic ALU_ctrl,
+    output logic [2:0] ALU_ctrl,
     output logic ALU_src_sig,
-    output logic exten_src_sig,
+    output logic [1:0] exten_src_sig,
     output logic reg_write_sig
 );
 
-    logic [2:0] ALU_op;
+    logic [1:0] ALU_op;
     logic branch;
 
     main_decoder main_decoder_instance (
