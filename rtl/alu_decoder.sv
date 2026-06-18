@@ -8,23 +8,24 @@ module alu_decoder(
 
 );
 
+logic [6:0] ALU_bus;
+
 always_comb 
     begin
-        logic [6:0] ALU_bus;
-
+        
         ALU_bus = {ALU_op_in, funct3, op_5_in, funct7};
 
-        case (ALU_bus)
+        casez (ALU_bus)
             // add for lw sw
-            7'b00_xxx_xx : ALU_ctrl = 000;
+            7'b00_???_?? : ALU_ctrl = 3'b000;
             // beq
-            7'b01_xxx_xx : ALU_ctrl = 001;
+            7'b01_???_?? : ALU_ctrl = 3'b001;
             // R-type
-            7'b10_000_00, 7'b10_000_01, 7'b10_000_10 : ALU_ctrl = 000; // add
-            7'b10_000_11 : ALU_ctrl = 001; // sub
-            7'b10_010_xx : ALU_ctrl = 101; // slt
-            7'b10_110_xx : ALU_ctrl = 011; // or
-            7'b10_111_xx : ALU_ctrl = 010; // and
+            7'b10_000_00, 7'b10_000_01, 7'b10_000_10 : ALU_ctrl = 3'b000; // add
+            7'b10_000_11 : ALU_ctrl = 3'b001; // sub
+            7'b10_010_?? : ALU_ctrl = 3'b101; // slt
+            7'b10_110_?? : ALU_ctrl = 3'b011; // or
+            7'b10_111_?? : ALU_ctrl = 3'b010; // and
             
             default : ALU_ctrl = 3'bxxx;
         endcase
