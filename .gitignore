@@ -10,5 +10,9 @@ work/
 .project
 .library_mapping.xml
 
-// vivado
+# vivado
 vivado_RISCV/
+
+# Diagram
+CPU_Diagram.drawio
+images/
