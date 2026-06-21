@@ -23,6 +23,8 @@ always_comb
 
         if(result === 0)
             zeroFlag = 1;
+        else
+            zeroFlag = 0;
 
         
     end
