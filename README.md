@@ -20,6 +20,8 @@ lw, sw
 
 beq, jal
 
+## Architecture Overview
+
 ## Program Counter (PC)
 
 ### Operation
@@ -35,9 +37,7 @@ PC’
 
 ### Block Diagram
 
-![Program Counter Diagram](images/PC_Counter.png)
-
-
+<img src="images/PC_Counter.png" alt="Program Counter Diagram" width="800">
 
 
 
@@ -61,7 +61,7 @@ Instruction
 
 ### Block Diagram
 
-![Instruction Memory Diagram](images/Instruction_Memory.png)
+<img src="images/Instruction_Memory.png" alt="Instruction Memory Diagram" width="800">
 
 ### Waveform
 
@@ -86,8 +86,7 @@ RD2
 
 ### Block Diagram
 
-![Register File Diagram](images/Register_File.png)
-
+<img src="images/Register_File.png" alt="Register File Diagram" width="800">
 
 
 ### Waveform
@@ -102,7 +101,7 @@ Picks which operation is performed on a & b based on the alu_select signal
 
 ### ALU OPERATIONS
 
-![ALU Operations Table](images/ALU_Operations.png)
+<img src="images/ALU_Operations.png" alt="ALU Operations Table" width="800">
 
 
 Input
@@ -115,7 +114,7 @@ result
 
 ### Block Diagram
 
-![ALU Diagram](images/ALU.png)
+<img src="images/ALU.png" alt="ALU" width="800">
 
 
 ### Waveform
@@ -137,7 +136,7 @@ RD
 
 ### Block Diagram
 
-![Data Memory Diagram](images/Data_Memory.png)
+<img src="images/Data_Memory.png" alt="Data Memory Diagram" width="800">
 
 
 ### Waveform
@@ -150,7 +149,7 @@ RD
 
 ### Block Diagram
 
-![Control Unit Diagram](images/Control_Unit.png)
+<img src="images/Control_Unit.png" alt="Control Unit Diagram" width="800">
 
 
 
