@@ -1,10 +1,24 @@
 # RISC-V 32-bit Single Cycle Processor
 
-This project implements a 32-bit single-cycle processor in SystemVerilog. The CPU executes one instruction per clock cycle and supports arithmetic, logical, memory access, and branch operations. 
+This project implements a 32-bit single-cycle processor in SystemVerilog with Vivado based on reduced RV32I instruction subset. The CPU executes one instruction per clock cycle and supports arithmetic, logical, memory access, and branch operations. The goal of this implementation is to demonstrate a working CPU microarchitecture and validate core ISA behavior through simulation-based verification.
 
-#FIX-ME add isa subset
+## ISA
 
-This is a walkthrough of the CPU starting with the full architecture then breaking it down by each component
+### Arithmetic/Logic
+
+add, sub, and,
+
+or, xor, sll,
+
+srl, sra
+
+### Memory
+
+lw, sw
+
+### Control
+
+beq, jal
 
 ## Program Counter (PC)
 
@@ -88,44 +102,7 @@ Picks which operation is performed on a & b based on the alu_select signal
 
 ### ALU OPERATIONS
 
-
-
-
-
-
-Select
-Definition
-Assembly
-0
-Add
-add
-1
-Subtract
-sub
-2
-AND
-and
-3
-OR
-or
-4
-XOR
-xor
-5
-Shift logical left
-sll
-6
-Shift logical right
-slr
-7
-Shift arithmetic right
-sar
-8
-Set if less than signed
-slt
-9
-Set if less than unsigned
-sltu
+![ALU Operations Table](images/ALU_Operations.png)
 
 
 Input
