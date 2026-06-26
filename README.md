@@ -26,14 +26,10 @@ beq, jal
 
 ### Operation
 
-The program counter stores the next address the CPU should go to. 
+- The program counter stores the next address the CPU will go to. 
 
-Input
-Clk
-Reset
-PC
-Output
-PC’
+Input: clk, reset, PC
+Output: PC’
 
 ### Block Diagram
 
@@ -51,13 +47,12 @@ PC’
 
 ### Operation
 
-Stores instructions in from assembly ROM and outputs machine code of instruction
+- Converts byte address to word indexed via address/4 to store in memory
+- Stores all instructions and outputs machine code of each instruction
 
-Input
-Address
+Input: address
 
-Output
-Instruction
+Output: instruction
 
 ### Block Diagram
 
@@ -69,20 +64,14 @@ Instruction
 
 ### Operation 
 
-32 element 32-bit registers,  A1, A2, A3 is the address of each register, read is always  A1 = RD1 and A2 = RD2 with RD1 and RD2 being the value inside the specific register(A), if WE is enabled then the value in register A3 will get overwritten with WD3’s data
+- 32 element 32-bit registers  
+- A1, A2, A3 is the address of each register
+- RD1 and RD2 is always combinational 
+- RD1 and RD2 is the value of the respective register
+- If WE is enabled then the value in register A3 will get overwritten with WD3’s data
 
-Input
-Clk
-Reset
-WE3 
-WD3 
-A1
-A2
-A3
-
-Output
-RD1
-RD2
+Input: clk, reset, WE3, WD3, A1, A2, A3
+Output: RD1, RD2
 
 ### Block Diagram
 
@@ -97,19 +86,16 @@ RD2
 ## Arithmetic Logic Unit (ALU)
 
 ### Operation
-Picks which operation is performed on a & b based on the alu_select signal
+
+- Picks which operation is performed on a & b based on the alu_select signal
 
 ### ALU OPERATIONS
 
 <img src="images/ALU_Operations.png" alt="ALU Operations Table" width="800">
 
 
-Input
-a
-b
-alu_select
-Output
-result
+Input: a, b, alu_select
+Output: ALUResult
 
 
 ### Block Diagram
@@ -123,16 +109,13 @@ result
 
 ### Operation
 
-1024 element 32-bit RAM, takes valid address converts to bye-addressable then gets the value from that address in memory and outputs it
+- 1024 element 32-bit RAM
+- Converts byte address to word indexed via ALU_Result/4 to store in memory
+- Combinationally outputs value from that memory cell
 
-Inputs
-clk
-WE
-address
-WD
+Inputs: clk, WE, address, WD
 
-Output
-RD
+Output: RD
 
 ### Block Diagram
 
@@ -141,27 +124,18 @@ RD
 
 ### Waveform
 
-
-
-
-
 ## Control Unit
+
+### Operation
+
+- Decodes the machine code and outputs the right set of control signals
+
+Inputs: op, funct3, funct7
+Outputs: PCSrc, ResultSrc, MemWrite, ALUCtrl, exten_sel, RegWrite
 
 ### Block Diagram
 
 <img src="images/Control_Unit.png" alt="Control Unit Diagram" width="800">
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
