@@ -9,7 +9,7 @@ logic [31:0] d_mem[0:1023];
 // Write at clk edge
 always_ff @(posedge clk) 
     begin
-        if (WE && ((address[31:2]) < 1024)) // address within valid range, [31:2] gets rid of 1-4, byte adressable
+        if (WE && ((address[31:2]) < 1024)) // address within valid range, [31:2] gets rid of 1-4 (word-indexed)
                 d_mem[address[31:2]] <= WD;
     end
 

@@ -12,6 +12,6 @@ module instr_mem(
         end
     
     // assign instruction for current address
-    assign instruction = mem[address[11:2]]; // address (0x0,0x4,0x8) but ROM is (0x0,0x1,0x2) so remove [2:0], called (byte adressable)
+    assign instruction = mem[address[11:2]]; // address (0x0,0x4,0x8) but ROM is (0x0,0x1,0x2) so remove [2:0] (word-indexed)
        
 endmodule
