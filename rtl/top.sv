@@ -1,18 +1,5 @@
 module top (
-    input logic clk, reset,
-    output logic [31:0] pc_out, 
-                        instruct_out, 
-                        RD1_out, 
-                        RD2_out, 
-                        WD3_out, 
-                        exten_out, 
-                        A1_out, 
-                        A2_out, 
-                        A3_out,
-                        sign_ex_addin_out
-
-
-    
+    input logic clk, reset
 );
 
 // CONSTANTS
@@ -54,19 +41,6 @@ logic [31:0] result;
 assign ALU_srcA = RD1;
 assign write_data = RD2;
 
-// Observation Signals for tb
-assign pc_out = PC_curr;
-assign instruct_out = instruction;
-assign RD1_out = RD1;
-assign RD2_out = RD2;
-assign WD3_out = result;
-assign exten_out = exten;
-assign A1_out = instruction [19:15];
-assign A2_out = instruction [24:20];
-assign A3_out = instruction [11:7];
-assign sign_ex_addin_out = instruction [31:7];
-
-
 
 prog_count prog_count_instance (
     .clk(clk),
@@ -82,7 +56,6 @@ instr_mem instr_mem_instance (
 
 reg_file reg_file_instance (
     .clk(clk),
-    .reset(reset),
     .WE3(reg_write),
     // base reg for I & S type
     .A1(instruction [19:15]),
@@ -105,7 +78,7 @@ alu alu_instance (
     .a(ALU_srcA),
     .b(ALU_srcB),
     .select(ALU_ctrl),
-    .result(ALU_result),
+    .ALUResult(ALU_result),
     .zeroFlag(zeroFlag)
 );
 
