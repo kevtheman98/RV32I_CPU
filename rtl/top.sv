@@ -69,9 +69,9 @@ reg_file reg_file_instance (
 );
 
 sign_extn sign_extn_instance (
-    .sign_ex_addin(instruction [31:0]),
+    .sign_ex_in(instruction [31:0]),
     .sign_ex_select(exten_sel),
-    .sign_ex_addout(exten)
+    .sign_ex_out(exten)
 );
 
 alu alu_instance (
