@@ -9,7 +9,7 @@ module alu_tb;
         .b(b),
         .select(select),
         .zeroFlag(zeroFlag), // FIX-ME test zeroflag
-        .result(result)
+        .ALUResult(result)
     );
 
     function logic [31:0] expected_alu(input logic [31:0] a, b, input logic [3:0] select);
