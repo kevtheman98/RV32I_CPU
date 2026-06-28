@@ -20,7 +20,6 @@ module reg_file_tb;
     
     reg_file reg_file_inst (
         .clk(clk),
-        .reset(reset),
         .WE3(WE3),
         .A1(A1),
         .A2(A2),
@@ -29,18 +28,6 @@ module reg_file_tb;
         .RD1(RD1),
         .RD2(RD2)
     );
-
-    task automatic apply_reset();
-        cb.reset <= 1;
-        cb.WE3 <= 0;
-        cb.A1 <= 0;
-        cb.A2 <= 0;
-        cb.A3 <= 0;
-        cb.WD3 <= 0;
-        repeat(2) @(cb);
-        cb.reset <= 0;
-        @(cb);
-    endtask
 
     task automatic write_reg(input logic [4:0] reg1, input logic [31:0] data);
         cb.WE3 <= 1;
@@ -62,22 +49,12 @@ module reg_file_tb;
         begin
             errors = 0;
         
-            // initialize scoreboard
-            apply_reset();
-
-            // verify reset
-            for (int i = 0; i < 32; i++) 
-                begin
-                    read_reg(i, i);
-                end
-            
                 
             // basic read write test to reg 6
             write_reg(6, 32'h 0000_1234);
             read_reg(6, 6);
         
                 
-
             // write multiple times test to reg 2
             write_reg(2, 32'h 0000_5678);
             write_reg(2, 32'h 0000_9ABC);
@@ -107,17 +84,8 @@ module reg_file_tb;
     // Scoreboard(expected_reg)
     always@(posedge clk)
         begin
-            if(reset) // not cb because outputs cannot be read only driven so it needs to be raw input
-                begin
-                    for (int i = 0; i < 32; i++) 
-                        expected_reg[i] <= '0;
-                end
-            else
-                begin
-                    if(WE3 && (A3 != 0))
-                        expected_reg[A3] <= WD3;
-                end
-                
+            if(WE3 && (A3 != 0))
+                expected_reg[A3] <= WD3;         
         end
 
     
