@@ -15,19 +15,30 @@ always_comb
                 sign_ex_addin [31:20]
             };
 
-             // offset immediate is stored in instr[31:25] and instr[11:7] for sw
+             // S-type offset immediate is stored in instr[31:25] and instr[11:7] 
             2'b01 : sign_ex_addout [31:0] = {
                 {20{sign_ex_addin[31]}},
                 sign_ex_addin[31:25], 
                 sign_ex_addin[11:7]
             };
 
-            // offset immediate for b type, 13-bit, branch address always will be even, so lsb will always be 0
+            // branch & jump always will always be multiples of 2, so lsb will always be 0
+
+            // B-type 13-bit 
             2'b10 : sign_ex_addout [31:0] = {
                 {20{sign_ex_addin[31]}},
                 sign_ex_addin[7], 
                 sign_ex_addin[30:25], 
                 sign_ex_addin[11:8], 
+                1'b0
+            };
+
+            // J type 21-bit 
+            2'b11 : sign_ex_addout [31:0] = {
+                {12{sign_ex_addin[31]}},
+                sign_ex_addin[19:12],
+                sign_ex_addin[20],
+                sign_ex_addin[30:21],
                 1'b0
             };
 

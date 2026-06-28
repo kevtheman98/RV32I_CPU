@@ -105,8 +105,10 @@ adder PC_target_adder (
 // Muxes & Control Signals
 
 logic ALU_src;
-logic result_src; 
+logic [1:0] result_src; 
+logic [31:0] inter_mux;
 logic PC_src;
+logic jump;
 
 mux ALU_mux (
     .a(RD2),
@@ -115,10 +117,18 @@ mux ALU_mux (
     .y(ALU_srcB)
 );
 
-mux result_mux (
+// use 2 2:1 mux to make 3:1 mux for result_mux
+mux result_mux_a (
     .a(ALU_result),
     .b(read_data),
-    .sel(result_src),
+    .sel(result_src[0]),
+    .y(inter_mux)
+);
+
+mux result_mux_b (
+    .a(inter_mux),
+    .b(PC_plus4), // saves address for j-type
+    .sel(result_src[1]),
     .y(result)
 );
 
@@ -142,7 +152,8 @@ control_unit control_unit_instance (
     .ALU_ctrl(ALU_ctrl),
     .ALU_src_sig(ALU_src),
     .exten_src_sig(exten_sel),
-    .reg_write_sig(reg_write)
+    .reg_write_sig(reg_write),
+    .jump_sig(jump)
 );
 
 
