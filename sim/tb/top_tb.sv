@@ -1,14 +1,11 @@
 module top_tb;
     logic clk, reset;
-    logic [31:0] pc_out, instruct_out, RD1_out, RD2_out;
+
 
     top top_instance (
         .clk(clk),
-        .reset(reset),
-        .pc_out(pc_out),
-        .instruct_out(instruct_out),
-        .RD1_out(RD1_out),
-        .RD2_out(RD2_out)
+        .reset(reset)
+
     );
 
     initial clk = 0;
@@ -21,7 +18,11 @@ module top_tb;
             @(posedge clk);
             @(posedge clk);
             reset = 0;
-            repeat(3) @(posedge clk);
+            repeat(20) @(posedge clk);
+            
+
+            $display("Test finished");
+            $finish;
             
         
         end
