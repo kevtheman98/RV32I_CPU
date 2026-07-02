@@ -5,11 +5,13 @@ module top (
 // CONSTANTS
 const int PC_increm = 4;
 
-// PC & Adder
+// PC & ADDER
 logic [31:0] PC_curr;
 logic [31:0] PC_next;
 logic [31:0] PC_plus4;
 logic [31:0] PC_target;
+logic [31:0] PC_target_src;
+logic [31:0] PC_target_sel;
 
 
 // INSTURCTION MEMORY 
@@ -21,9 +23,9 @@ logic reg_write;
 logic [31:0] RD1;
 logic [31:0] RD2;
 
-// SIGN EXTENSION 
-logic [31:0] exten;
-logic [1:0] exten_sel;
+// SIGN IMMEDIATE EXTENSION 
+logic [31:0] imm_exten;
+logic [1:0] imm_exten_sel;
 
 // ALU 
 logic [31:0] ALU_result;
@@ -32,7 +34,7 @@ logic [31:0] ALU_srcA;
 logic [31:0] ALU_srcB;
 logic zeroFlag;
 
-// Data memory
+// DATA MEMORY
 logic [31:0] read_data;
 logic mem_write;
 logic [31:0] result;
@@ -70,8 +72,8 @@ reg_file reg_file_instance (
 
 sign_extn sign_extn_instance (
     .sign_ex_in(instruction [31:0]),
-    .sign_ex_select(exten_sel),
-    .sign_ex_out(exten)
+    .sign_ex_select(imm_exten_sel),
+    .sign_ex_out(imm_exten)
 );
 
 alu alu_instance (
@@ -92,13 +94,13 @@ data_mem data_mem_instance (
 
 adder PC_adder (
     .current_address(PC_curr),
-    .increment_addr(PC_increm),
+    .increm(PC_increm),
     .next_address(PC_plus4)
 );
 
 adder PC_target_adder (
-    .current_address(PC_curr),
-    .increment_addr(exten),
+    .current_address(PC_target_src),
+    .increm(imm_exten),
     .next_address(PC_target)
 );
 
@@ -112,7 +114,7 @@ logic jump;
 
 mux ALU_mux (
     .a(RD2),
-    .b(exten),
+    .b(imm_exten),
     .sel(ALU_src),
     .y(ALU_srcB)
 );
@@ -139,6 +141,14 @@ mux PC_mux (
     .y(PC_next)
 );
 
+mux PC_target_mux (
+    .a(RD1),
+    .b(PC_curr),
+    .sel(PC_target_sel),
+    .y(PC_target_src)
+
+);
+
 // Control Unit
 
 control_unit control_unit_instance (
@@ -146,14 +156,15 @@ control_unit control_unit_instance (
     .funct3(instruction[14:12]),
     .funct7(instruction[30]), // only funct7[5]
     .zero(zeroFlag), 
-    .PC_sig(PC_src),
+    .PC_src_sig(PC_src),
     .result_sig(result_src),
     .mem_write_sig(mem_write),
     .ALU_ctrl(ALU_ctrl),
     .ALU_src_sig(ALU_src),
-    .exten_src_sig(exten_sel),
+    .imm_exten_src_sig(imm_exten_sel),
     .reg_write_sig(reg_write),
-    .jump_sig(jump)
+    .jump_sig(jump),
+    .PC_target_src_sig(PC_target_sel)
 );
 
 

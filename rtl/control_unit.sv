@@ -5,14 +5,15 @@ module control_unit (
     input logic zero,
 
 
-    output logic PC_sig,
+    output logic PC_src_sig,
     output logic [1:0] result_sig,
     output logic mem_write_sig,
     output logic [2:0] ALU_ctrl,
     output logic ALU_src_sig,
-    output logic [1:0] exten_src_sig,
+    output logic [1:0] imm_exten_src_sig,
     output logic reg_write_sig,
-    output logic jump_sig
+    output logic jump_sig,
+    output logic PC_target_src_sig
 );
 
     logic [1:0] ALU_op;
@@ -21,13 +22,14 @@ module control_unit (
     main_decoder main_decoder_instance (
         .main_op_in(control_op),
         .reg_write_sig(reg_write_sig),
-        .exten_src_sig(exten_src_sig),
+        .imm_exten_src_sig(imm_exten_src_sig),
         .ALU_src_sig(ALU_src_sig),
         .mem_write_sig(mem_write_sig),
         .result_sig(result_sig),
         .branch_sig(branch),
         .ALU_op_out(ALU_op),
-        .jump_sig(jump_sig)
+        .jump_sig(jump_sig),
+        .PC_target_src_sig(PC_target_src_sig)
     );
 
     alu_decoder alu_decoder_instance (
@@ -38,7 +40,7 @@ module control_unit (
         .ALU_ctrl(ALU_ctrl)
     );
 
-    assign PC_sig = jump_sig || (branch && zero);
+    assign PC_src_sig = jump_sig || (branch && zero);
 
 
 endmodule
