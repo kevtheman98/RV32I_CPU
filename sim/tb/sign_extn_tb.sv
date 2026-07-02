@@ -5,9 +5,9 @@ module sign_extn_tb;
     int errors;
 
     sign_extn sign_extn_instance (
-        .sign_ex_addin(sign_ex_addin),
+        .sign_ex_in(sign_ex_addin),
         .sign_ex_select(sign_ex_select),
-        .sign_ex_addout(sign_ex_addout)
+        .sign_ex_out(sign_ex_addout)
     );
 
     task automatic test_sign_extn(
