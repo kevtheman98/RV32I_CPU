@@ -10,7 +10,7 @@ always_comb
         case (sign_ex_select)
 
             // I-type 12-bit immediate field instr[31:20] 
-            2'b00 : sign_ex_out = {
+            2'b00 : sign_ex_out [31:0] = {
                 {20{sign_ex_in[31]}},
                 sign_ex_in [31:20]
             };
