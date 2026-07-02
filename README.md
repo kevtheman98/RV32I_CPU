@@ -4,6 +4,8 @@ This project implements a 32-bit single-cycle processor in SystemVerilog with Vi
 
 ## ISA
 
+//FIX-ME fix diagram add imm_exten var  name
+
 ### Arithmetic/Logic
 
 add, sub, and,
@@ -29,6 +31,7 @@ beq, jal
 - The program counter stores the next address the CPU will go to. 
 
 Input: clk, reset, PC
+
 Output: PC’
 
 ### Block Diagram
@@ -71,6 +74,7 @@ Output: instruction
 - If WE is enabled then the value in register A3 will get overwritten with WD3’s data
 
 Input: clk, reset, WE3, WD3, A1, A2, A3
+
 Output: RD1, RD2
 
 ### Block Diagram
@@ -95,6 +99,7 @@ Output: RD1, RD2
 
 
 Input: a, b, alu_select
+
 Output: ALUResult
 
 
@@ -128,14 +133,50 @@ Output: RD
 
 ### Operation
 
-- Decodes the machine code and outputs the right set of control signals
+- Decodes the op, funct3, funct7 fields
+- Drives correct set of signals for datapath routing and ALU selection
+- Implments main control logic
 
 Inputs: op, funct3, funct7
+
 Outputs: PCSrc, ResultSrc, MemWrite, ALUCtrl, exten_sel, RegWrite
 
 ### Block Diagram
 
 <img src="images/Control_Unit.png" alt="Control Unit Diagram" width="800">
+
+### Waveform
+
+// explain why 2-byte alignment for jumps and branches(sign_extn.sv)
+
+## Multiplexer
+
+### Operation
+
+- Chooses which input to let through based on select signal primarily used for control logic
+
+Inputs: a, b, sel
+
+Outputs: y
+
+### Block Diagram
+
+<img src="images/mux.png" alt="Mulitplexer Diagram" width="800">
+
+
+## Adder
+
+### Operation
+
+- adds the two inputs one is address and other is increment
+
+Inputs: curr_addr, increm
+
+Outputs: next_addr
+
+### Block Diagram
+
+<img src="images/adder.png" alt="Adder Diagram" width="800">
 
 
 
