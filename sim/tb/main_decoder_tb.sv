@@ -4,10 +4,11 @@ module main_decoder_tb;
     logic [1:0] exten_src_sig;
     logic ALU_src_sig;
     logic mem_write_sig;
-    logic result_sig;
+    logic [1:0] result_sig;
     logic branch_sig;
     logic [1:0] ALU_op_out;
     logic jump_sig;
+    logic PC_target_src_sig;
     int errors = 0;
 
 
@@ -20,7 +21,8 @@ module main_decoder_tb;
         .result_sig(result_sig),
         .branch_sig(branch_sig),
         .ALU_op_out(ALU_op_out),
-        .jump_sig(jump_sig)
+        .jump_sig(jump_sig),
+        .PC_target_src_sig(PC_target_src_sig)
     );
 
 
@@ -32,7 +34,9 @@ module main_decoder_tb;
         input logic mem_write_exp,
         input logic [1:0] result_exp,
         input logic branch_exp,
-        input logic [1:0] ALU_op_out_exp
+        input logic [1:0] ALU_op_out_exp,
+        input logic jump_exp,
+        input logic PC_target_src_exp
     );
         if(
             reg_write_exp === reg_write_sig &&
@@ -41,7 +45,9 @@ module main_decoder_tb;
             mem_write_exp === mem_write_sig &&
             result_exp === result_sig &&
             branch_exp === branch_sig &&
-            ALU_op_out_exp === ALU_op_out
+            ALU_op_out_exp === ALU_op_out &&
+            jump_exp === jump_sig &&
+            PC_target_src_exp === PC_target_src_sig
         )
             begin
                 $display("Test for %s passed", test_name);
@@ -113,7 +119,7 @@ module main_decoder_tb;
                 2'b10,
                 1'b0,
                 1'b0,
-                2'bxx,
+                2'b00,
                 1'b1,
                 2'b01,
                 1'b0,
@@ -128,14 +134,14 @@ module main_decoder_tb;
                 2'b00,
                 1'b1,
                 1'b0,
-                2'bx,
-                1'b1,
-                2'b01,
+                2'b00,
+                1'b0,
+                2'b10,
                 1'b0,
                 1'bx
             );
 
-            main_op_in = 7'b001_0011;
+            main_op_in = 7'b110_1111;
             #1;
             check(
                 "jal",
@@ -150,7 +156,7 @@ module main_decoder_tb;
                 1'b1
             );
 
-            main_op_in = 7'b001_0011;
+            main_op_in = 7'b110_0111;
             #1;
             check(
                 "jalr",
@@ -169,13 +175,15 @@ module main_decoder_tb;
             #1;
             check(
                 "default",
-                1'b0,
-                2'b00,
-                1'b0,
-                1'b0,
-                1'b0,
-                1'b0,
-                2'b00
+                1'bx,
+                2'bxx,
+                1'bx,
+                1'bx,
+                1'bx,
+                1'bx,
+                2'bxx,
+                1'bx,
+                1'bx
             );
             
 

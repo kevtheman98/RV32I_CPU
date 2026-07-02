@@ -76,7 +76,7 @@ always_comb begin
                             PC_target_src_sig = 1'bx;    
                         end
         
-        // J-type jalr
+        // J-type jal
         7'b110_1111 :   begin
                             reg_write_sig = 1'b1;
                             imm_exten_src_sig = 2'b11;
