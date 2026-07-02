@@ -5,10 +5,10 @@ module adder_tb;
     int errors;
 
 
-    // FIX-ME made more modular because multiple adders were needed
+
     adder adder_instance (
         .current_address(current_address),
-        .increment_addr(increment_addr),
+        .increm(increment_addr),
         .next_address(next_address)
     );
 
