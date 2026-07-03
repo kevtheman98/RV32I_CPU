@@ -4,9 +4,9 @@ This project implements a 32-bit single-cycle processor in SystemVerilog with Vi
 
 ## ISA
 
-//FIX-ME fix diagram add imm_exten var  name
+<img src="images/full_diagram.png" alt="Full CPU Architecture Diagram" width="800">
 
-### Arithmetic/Logic
+### R-Type
 
 add, sub, and,
 
@@ -14,13 +14,21 @@ or, xor, sll,
 
 srl, sra
 
-### Memory
+### I-type
 
-lw, sw
+lw, addi, jalr
 
-### Control
+### S-type
 
-beq, jal
+sw
+
+### B-type
+
+beq
+
+### J-type
+
+jal
 
 ## Architecture Overview
 
