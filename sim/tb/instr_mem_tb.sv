@@ -1,27 +1,27 @@
 module instr_mem_tb;
-    parameter tb_ROM_0 = 32'h0044A303;
-    parameter tb_ROM_1 = 32'h0064A423;
-    
-    
     logic [31:0] address;
     logic [31:0] instruction;
     int errors;
 
-    instr_mem instr_mem_instance (
+    instr_mem dut (
         .address(address),
         .instruction(instruction)
     );
+
+    
 
     initial 
         begin
             errors = 0;
 
+            $readmemh("default.mem", dut.mem);
+
             // test ROM[0]
             address = '0;
             #1;
-            assert(instruction === tb_ROM_0) 
+            assert(instruction === dut.mem[0]) 
                 else begin
-                        $error("ROM read failed, Value: %h, Expected: %h", instruction, tb_ROM_0);
+                        $error("ROM read failed, Value: %h, Expected: %h", instruction, dut.mem[0]);
                         errors++;
                     end
                 
@@ -29,9 +29,9 @@ module instr_mem_tb;
             // test ROM[1]
             address = 32'h0000_0004;
             #1;
-            assert(instruction === tb_ROM_1) 
+            assert(instruction === dut.mem[1]) 
                 else begin
-                        $error("ROM read failed, Value: %h, Expected: %h", instruction, tb_ROM_1);
+                        $error("ROM read failed, Value: %h, Expected: %h", instruction, dut.mem[1]);
                         errors++;
                     end
 
