@@ -2,9 +2,11 @@
 
 This project implements a 32-bit single-cycle processor in SystemVerilog with Vivado based on reduced RV32I instruction subset. The CPU executes one instruction per clock cycle and supports arithmetic, logical, memory access, and branch operations. The goal of this implementation is to demonstrate a working CPU microarchitecture and validate core ISA behavior through simulation-based verification.
 
-## ISA
+## Architecture Overview
 
 <img src="images/full_diagram.png" alt="Full CPU Architecture Diagram" width="800">
+
+## ISA
 
 ### R-Type
 
@@ -30,8 +32,6 @@ beq
 
 jal
 
-## Architecture Overview
-
 ## Program Counter (PC)
 
 ### Operation
@@ -49,9 +49,6 @@ Output: PC’
 
 
 ### Waveform
-
-
-
 
 
 ## Instruction Memory
