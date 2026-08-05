@@ -17,6 +17,7 @@ module top_tb;
             if(!$value$plusargs("MEMFILE=%s", mem_file))
                 mem_file = "default.mem";
             
+            $display("Using memory file: %s", mem_file);
             $readmemh(mem_file, top_instance.instr_mem_instance.mem);
 
             reset = 1;
@@ -24,17 +25,17 @@ module top_tb;
             @(posedge clk);
             reset = 0;
             repeat(20) @(posedge clk);
+
+            $display("Test finished, checking results...");
+            $display("Data memory location 1023: %h", top_instance.data_mem_instance.d_mem[511]);
             
             // test status mem location 1 for pass, 0 for fail
 
-            if(top_instance.data_mem_instance.d_mem[1023])
-                begin
+            if(top_instance.data_mem_instance.d_mem[511] === 32'h1)
                     $display("Test Passed");
-                end
             else
                 $display("Test Failed");
 
-            $display("Test finished");
             $finish;
             
         
