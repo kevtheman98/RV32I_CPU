@@ -4,6 +4,7 @@ work/
 *.log
 *.jou
 *.wlf
+build/
 
 # Sigasi 
 .settings/
