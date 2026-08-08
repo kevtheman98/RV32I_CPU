@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 
 count = 0
+passCount = 0
 
 # pulls all SystemVerilog design files & assembly test files
 sv_files = [os.path.abspath(f) for f in glob.glob("rtl/*.sv")]
@@ -18,7 +19,7 @@ print(assembly_files)
 # xsim runs the simulation snapshot
 
 xvlogResult = subprocess.run(["xvlog", "-sv", *sv_files, "../sim/tb/top_tb.sv"], cwd = "./build", capture_output=True, text=True)
-xelabResult = subprocess.run(["xelab", "top_tb", "-s", "cpu_sim"], cwd = "./build", capture_output=True, text=True)
+xelabResult = subprocess.run(["xelab", "top_tb", "-debug", "typical", "-s", "cpu_sim"], cwd = "./build", capture_output=True, text=True)
 
 if xvlogResult.returncode != 0:
     print("xvlog failed")
@@ -40,7 +41,7 @@ for test_file in assembly_files:
     root, ext = os.path.splitext(file_name)
 
     compilerResult = subprocess.run(["riscv64-unknown-elf-gcc", "-march=rv32i", "-mabi=ilp32",
-                                     # bare metal flags 
+                                     # bare metal flags to get to raw hex
                                     "-nostdlib", "-nostartfiles", "-Ttext=0x0", 
                                     "-o", f"testdata/{root}.elf", f"tests/{root}.s"], 
                                     capture_output=True, text=True)
@@ -51,7 +52,8 @@ for test_file in assembly_files:
         print(compilerResult.stderr)
 
     else:
-        subprocess.run(["riscv64-unknown-elf-objcopy", "-O", "verilog", f"testdata/{root}.elf", f"testdata/{root}.hex"], capture_output=True, text=True)
+        # Convert the ELF file to a hex file using objcopy
+        subprocess.run(["riscv64-unknown-elf-objcopy", "-O", "verilog", "--verilog-data-width=4", f"testdata/{root}.elf", f"testdata/{root}.hex"], capture_output=True, text=True)
 
         if compilerResult.returncode != 0:
             print(f"Objcopy failed for {test_file}")
@@ -60,15 +62,18 @@ for test_file in assembly_files:
 testdata = [os.path.abspath(f) for f in glob.glob("testdata/*.hex")]
 print(testdata)
 
+# Simulate each test data file using xsim
 for testDataFile in testdata:
-
 
     xsimResult = subprocess.run(["xsim", "cpu_sim", "-R", "-testplusarg", f"MEMFILE={testDataFile}"], cwd="./build", capture_output=True, text=True)
     print(f"Running simulation with test data file: {testDataFile}")
     print(xsimResult.stdout)
     count += 1
+    if "TEST PASSED" in xsimResult.stdout:
+        passCount += 1
     print(f"Completed simulation {count}/{len(testdata)}")
 
 
-
+print(f"Successful simulations: {passCount}/{len(testdata)}")
 print(f"Completed all simulations. Total simulations run: {count}/{len(testdata)}")
+
