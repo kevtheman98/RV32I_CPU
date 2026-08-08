@@ -10,8 +10,8 @@ _start:
 
     beq x5, x4, pass
 
-    sw x0, 1024(x0)
+    sw x0, 2044(x0)
 
     pass:
         addi x31, x0, 1
-        sw x31, 1024(x0)
+        sw x31, 2044(x0)
