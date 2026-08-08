@@ -14,6 +14,12 @@ module top_tb;
 
     initial 
         begin
+
+            // GTK waveform generation
+            $dumpfile("top_tb.vcd");
+            $dumpvars(0, top_tb);
+
+
             if(!$value$plusargs("MEMFILE=%s", mem_file))
                 mem_file = "default.mem";
             
@@ -27,14 +33,14 @@ module top_tb;
             repeat(20) @(posedge clk);
 
             $display("Test finished, checking results...");
-            $display("Data memory location 1023: %h", top_instance.data_mem_instance.d_mem[511]);
+            $display("Data memory location 511: %h", top_instance.data_mem_instance.d_mem[511]);
             
             // test status mem location 1 for pass, 0 for fail
 
             if(top_instance.data_mem_instance.d_mem[511] === 32'h1)
-                    $display("Test Passed");
+                    $display("TEST PASSED");
             else
-                $display("Test Failed");
+                $display("TEST FAILED");
 
             $finish;
             
