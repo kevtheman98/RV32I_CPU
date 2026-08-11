@@ -5,6 +5,7 @@ work/
 *.jou
 *.wlf
 build/
+testdata/
 
 # Sigasi 
 .settings/
