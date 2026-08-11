@@ -40,9 +40,11 @@ for test_file in assembly_files:
 
     root, ext = os.path.splitext(file_name)
 
+    linker_script_path = os.path.abspath("sim/linker.ld")  # Get the absolute path of the linker script
+
     compilerResult = subprocess.run(["riscv64-unknown-elf-gcc", "-march=rv32i", "-mabi=ilp32",
                                      # bare metal flags to get to raw hex
-                                    "-nostdlib", "-nostartfiles", "-Ttext=0x0", 
+                                    "-nostdlib", "-nostartfiles", "-T", linker_script_path, 
                                     "-o", f"testdata/{root}.elf", f"tests/{root}.s"], 
                                     capture_output=True, text=True)
 
