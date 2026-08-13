@@ -16,7 +16,7 @@ always_comb
             3'b100 : ALUResult = a ^ b; // xor
             3'b101 : ALUResult = a << b[4:0]; // sll
             3'b110 : ALUResult = a >> b[4:0]; // slr
-            3'b111 : ALUResult = a >>> b[4:0]; // sar
+            3'b111 : ALUResult = $signed(a) >>> b[4:0]; // sra
  
             default : ALUResult = 32'bx;
         endcase
