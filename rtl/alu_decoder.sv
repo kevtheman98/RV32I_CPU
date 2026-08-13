@@ -26,6 +26,10 @@ always_comb
             7'b10_010_?? : ALU_ctrl = 3'b101; // slt
             7'b10_110_?? : ALU_ctrl = 3'b011; // or
             7'b10_111_?? : ALU_ctrl = 3'b010; // and
+            7'b10_100_?? : ALU_ctrl = 3'b100; // xor
+            7'b10_001_?? : ALU_ctrl = 3'b101; // sll
+            7'b10_101_?1 : ALU_ctrl = 3'b111; // sra
+            7'b10_101_?? : ALU_ctrl = 3'b110; // srl
             
             default : ALU_ctrl = 3'bxxx;
         endcase
