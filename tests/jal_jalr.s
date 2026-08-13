@@ -5,11 +5,6 @@ _start:
     addi x2, x0, 14
     jal x1, func
 
-    func:
-        
-        addi x6, x0, 14 #1110
-        jalr x0, 0(x1)
-
     beq x2, x6, pass
 
     sw x0, 2044(x0)
@@ -20,4 +15,9 @@ _start:
     pass:
         addi x31, x0, 1
         sw x31, 2044(x0)
+
+    func:
+        addi x6, x0, 14 #1110
+        jalr x0, 0(x1)
+
     
