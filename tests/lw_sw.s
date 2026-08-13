@@ -8,7 +8,7 @@ _start:
     sw x3, (x2) # Store 14 in mem[2] 
     lw x6, (x2) # Store 14 in x6
 
-    beq x2, x6, pass
+    beq x3, x6, pass
 
     sw x0, 2044(x0)
 
