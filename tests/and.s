@@ -13,6 +13,9 @@ _start:
 
     sw x0, 2044(x0)
 
+    fail:
+        beq x0,x0, fail
+
     pass:
         addi x31, x0, 1
         sw x31, 2044(x0)

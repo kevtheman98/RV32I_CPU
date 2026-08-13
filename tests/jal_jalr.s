@@ -1,16 +1,16 @@
 .text
 .global _start
 _start:
+    
+    addi x2, x0, 14
+    jal x1, func
 
-    addi x4, x0, -6 #1010
+    func:
+        
+        addi x6, x0, 14 #1110
+        jalr x0, 0(x1)
 
-    addi x5, x0, -3 #1101
-
-    addi x7, x0, 1
-
-    sra x6, x4, x7
-
-    beq x5, x6, pass
+    beq x2, x6, pass
 
     sw x0, 2044(x0)
 
